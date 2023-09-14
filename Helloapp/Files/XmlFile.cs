@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-using System.Xml;
 using System.Xml.Serialization;
 using Helloapp.Entities;
 
@@ -15,15 +8,13 @@ namespace Helloapp.Files
 	{
 		public XmlFile() : base(".xml") { }
 
-		public override string Insert(string filename, object data)
+		public override string Insert(object data)
 		{
-			if (data is Student == false) throw new ArgumentException();
+			if (data is Student == false) throw new ArgumentException("Wrong type");
 
-			var path = Path.Combine(_dir, filename + _format);
-			var fileInfo = new FileInfo(path);
-			if (!fileInfo.Exists) return "Файл с данным именем не найден";
+			if (_info == null || !_info.Exists) return "Файл необходимо создать перед использованием!";
 
-			using var fs = fileInfo.Create();
+			using var fs = _info.Create();
 			var serializer = new XmlSerializer(typeof(Student));
 			serializer.Serialize(fs, (Student)data);
 

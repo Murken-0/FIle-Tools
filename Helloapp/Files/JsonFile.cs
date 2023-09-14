@@ -1,6 +1,5 @@
 ﻿using Helloapp.Entities;
 using System;
-using System.IO;
 using System.Text.Json;
 
 namespace Helloapp.Files;
@@ -9,17 +8,15 @@ public class JsonFile : FileBase
 {
     public JsonFile() : base(".json") { }
 
-    public override string Insert(string filename, object data)
+    public override string Insert(object data)
     {
-        if (data is Student == false) throw new ArgumentException();
+        if (data is Student == false) throw new ArgumentException("Wrong type");
 
-        var path = Path.Combine(_dir, filename + _format);
-        var fileInfo = new FileInfo(path);
-        if (!fileInfo.Exists) return "Файл с данным именем не найден";
+        if (_info == null || !_info.Exists) return "Файл необходимо создать перед использованием!";
 
-        using var fs = fileInfo.Create();
+        using var fs = _info.Create();
         JsonSerializer.Serialize(fs, (Student)data);
 
-        return "Файл успешно создан";
+        return "Файл успешно изменен";
     }
 }

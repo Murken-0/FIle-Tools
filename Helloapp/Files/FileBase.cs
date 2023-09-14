@@ -8,6 +8,7 @@ public abstract class FileBase
 {
     protected string _dir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
     protected string _format;
+    protected FileInfo _info;
 
     protected FileBase(string format)
     {
@@ -17,33 +18,27 @@ public abstract class FileBase
     public string Create(string filename)
     {
         var path = Path.Combine(_dir, filename + _format);
-        var fileInfo = new FileInfo(path);
-        using var stream = fileInfo.Create();
+        _info = new FileInfo(path);
+        using var stream = _info.Create();
 
-        return "Файл создан успешно";
+        return $"Файл {filename + _format} создан успешно";
     }
 
-    public string Delete(string filename)
+    public string Delete()
     {
-        var path = Path.Combine(_dir, filename + _format);
-        var fileInfo = new FileInfo(path);
+        if (_info == null || !_info.Exists)
+            return "Файл необходимо создать перед использованием!";
 
-        if (!fileInfo.Exists)
-            return "Файл с данным именем не найден!";
-
-        fileInfo.Delete();
+        _info.Delete();
         return "Файл удален успешно";
     }
 
-    public string Read(string filename)
+    public string Read()
     {
-        var path = Path.Combine(_dir, filename + _format);
-        var fileInfo = new FileInfo(path);
+        if (_info == null || !_info.Exists)
+            return "Файл необходимо создать перед использованием!";
 
-        if (!fileInfo.Exists)
-            return "Файл с данным именем не найден!";
-
-        using var stream = fileInfo.OpenRead();
+        using var stream = _info.OpenRead();
         var array = new byte[stream.Length];
         stream.Read(array, 0, array.Length);
         var textFromFile = Encoding.Default.GetString(array);
@@ -51,5 +46,5 @@ public abstract class FileBase
         return $"Текст из файла: {textFromFile}";
     }
 
-    public abstract string Insert(string filename, object data);
+    public abstract string Insert(object data);
 }
