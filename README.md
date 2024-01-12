@@ -2,10 +2,10 @@ This is practice project. It implements an application that allows crud operatio
 
 The application implements operations with following entities:
 1. Files:
-  - .txt
-  - .xml
-  - .json
+    - .txt
+    - .xml
+    - .json
 2. Archives:
-  - .zip
+    - .zip
 3. Disks:
-  - view disks info
+    - view disks info
